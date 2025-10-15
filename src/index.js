@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
     socket.on("sensors", (data) => {
         console.log("Get sensors ", data);
 
-        io.emit("sendToUnity", {es: data})
+        io.emit("sendToUnity", {es: [data]})
     })
 
     socket.on("disconnect", () => {
