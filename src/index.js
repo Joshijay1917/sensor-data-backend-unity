@@ -56,7 +56,7 @@ async function detectHand() {
   tf.engine().endScope()
 }
 
-setInterval(detectHand, 60000)
+setInterval(detectHand, 30000)
 
 server.listen(port, () => {
     console.log("Server is running on port ", port);
