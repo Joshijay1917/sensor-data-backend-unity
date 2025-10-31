@@ -39,17 +39,21 @@ io.on('connection', (socket) => {
 })
 
 async function detectHand() {
-    const img = await loadImage('./hand.jpg') // replace with live webcam later
-    const canvas = createCanvas(img.width, img.height)
-    const ctx = canvas.getContext('2d')
-    ctx.drawImage(img, 0, 0)
+  const img = await loadImage('./hand.jpg')
+  const canvas = createCanvas(img.width, img.height)
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(img, 0, 0)
 
-    const hands = await detector.estimateHands(canvas)
-    if (hands.length > 0) {
-        const points = hands[0].keypoints3D || hands[0].keypoints
-        io.emit('handData', points)
-        console.log('✋ Sent', points.length, 'points to Unity')
-    }
+  const hands = await tf.tidy(() => detector.estimateHands(canvas))
+
+  if (hands.length > 0) {
+    const points = hands[0].keypoints3D || hands[0].keypoints
+    io.emit('handData', points)
+    console.log('✋ Sent', points.length, 'points')
+  }
+
+  tf.engine().startScope() // optional, if used inside loops
+  tf.engine().endScope()
 }
 
 setInterval(detectHand, 1000)
